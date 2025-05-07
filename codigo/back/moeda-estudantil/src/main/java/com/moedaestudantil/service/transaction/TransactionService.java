@@ -56,6 +56,12 @@ public class TransactionService {
                 .build();
 
         transactionRepository.save(tx);
+
+        System.out.println("[EMAIL SIMULADO] Enviado para: " + student.getEmail());
+        System.out.println("Assunto: Você recebeu moedas!");
+        System.out.println("Mensagem: Você recebeu " + dto.getAmount() + " moedas de " + teacher.getName() +
+                ".\nMotivo: " + dto.getMessage());
+        System.out.println("-----------------------------------");
     }
 
     public List<TransactionResponseDTO> getTransactionsByStudent(Long studentId) {
