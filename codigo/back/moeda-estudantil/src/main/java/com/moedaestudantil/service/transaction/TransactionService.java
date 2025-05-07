@@ -56,8 +56,6 @@ public class TransactionService {
                 .build();
 
         transactionRepository.save(tx);
-
-        // TODO Aqui será simulado o envio de email futuramente
     }
 
     public List<TransactionResponseDTO> getTransactionsByStudent(Long studentId) {
