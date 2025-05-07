@@ -1,0 +1,14 @@
+entity\Teacher$TeacherBuilder.class
+entity\Reward$RewardBuilder.class
+entity\EducationalInstitution$EducationalInstitutionBuilder.class
+entity\Reward.class
+entity\Transaction$TransactionBuilder.class
+entity\EducationalInstitution.class
+entity\Student.class
+entity\PartnerCompany.class
+entity\Student$StudentBuilder.class
+entity\RewardRedemption.class
+entity\PartnerCompany$PartnerCompanyBuilder.class
+entity\Transaction.class
+entity\Teacher.class
+entity\RewardRedemption$RewardRedemptionBuilder.class
