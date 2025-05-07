@@ -1,5 +1,6 @@
 package com.moedaestudantil.service.transaction;
 
+import com.moedaestudantil.dto.transaction.RewardRedemptionHistoryDTO;
 import com.moedaestudantil.dto.transaction.RewardRedemptionRequestDTO;
 import com.moedaestudantil.dto.transaction.RewardRedemptionResponseDTO;
 import com.moedaestudantil.entity.Reward;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -58,5 +60,18 @@ public class RewardRedemptionService {
                 reward.getPartnerCompany().getEmail(),
                 student.getEmail()
         );
+    }
+
+    public List<RewardRedemptionHistoryDTO> getRedemptionsByStudent(Long studentId) {
+        return redemptionRepository.findByStudentId(studentId).stream()
+                .map(r -> new RewardRedemptionHistoryDTO(
+                        r.getReward().getTitle(),
+                        r.getReward().getDescription(),
+                        r.getReward().getCost(),
+                        r.getRedemptionCode(),
+                        r.getReward().getPartnerCompany().getName(),
+                        r.getRedeemedAt()
+                ))
+                .toList();
     }
 }
