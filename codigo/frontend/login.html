@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Login</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <h2>Login</h2>
+  <form id="loginForm">
+    <label>Email:</label><input type="email" id="email" required><br>
+    <label>Senha:</label><input type="password" id="senha" required><br>
+    <label>Tipo:</label>
+    <select id="tipo">
+      <option value="aluno">Aluno</option>
+      <option value="professor">Professor</option>
+      <option value="empresa">Empresa</option>
+    </select><br>
+    <button type="submit">Entrar</button>
+  </form>
+  <div id="msg"></div>
+  <script src="js/auth.js"></script>
+</body>
+</html> 

@@ -1,0 +1,5 @@
+body { font-family: Arial, sans-serif; margin: 30px; }
+input, button, select { margin: 5px 0; }
+form { margin-bottom: 20px; }
+#msg { color: red; }
+img { vertical-align: middle; } 
