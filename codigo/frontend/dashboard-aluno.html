@@ -2,16 +2,42 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8">
-  <title>Dashboard Aluno</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard do Aluno - Moeda Estudantil</title>
   <link rel="stylesheet" href="css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
-  <h2>Bem-vindo, Aluno!</h2>
-  <div id="saldo"></div>
-  <div id="extrato"></div>
-  <a href="vantagens.html">Ver Vantagens</a> |
-  <a href="index.html" onclick="localStorage.clear()">Sair</a>
-  <div id="msg"></div>
-  <script src="js/aluno.js"></script>
+  <div class="container">
+    <nav class="nav">
+      <a href="vantagens.html">Vantagens</a>
+      <a href="extrato.html">Extrato</a>
+      <a href="#" id="logout">Sair</a>
+    </nav>
+
+    <h2>Dashboard do Aluno</h2>
+    
+    <div class="dashboard">
+      <div class="dashboard-card">
+        <h3>Saldo Atual</h3>
+        <p id="saldo">Carregando...</p>
+      </div>
+      
+      <div class="dashboard-card">
+        <h3>Últimas Transações</h3>
+        <div id="ultimasTransacoes">
+          <p>Carregando...</p>
+        </div>
+      </div>
+      
+      <div class="dashboard-card">
+        <h3>Vantagens Disponíveis</h3>
+        <div id="vantagensDisponiveis">
+          <p>Carregando...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="js/dashboard-aluno.js"></script>
 </body>
 </html> 

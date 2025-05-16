@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cadastro de Aluno</title>
+  <title>Cadastro de Professor - Moeda Estudantil</title>
   <link rel="stylesheet" href="css/style.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
   <div class="container">
-    <h2>Cadastro de Aluno</h2>
+    <h2>Cadastro de Professor</h2>
     <form id="cadastroForm">
       <div class="form-group">
         <label for="nome">Nome</label>
@@ -27,18 +27,16 @@
       </div>
       
       <div class="form-group">
-        <label for="rg">RG</label>
-        <input type="text" id="rg" required>
+        <label for="departamento">Departamento</label>
+        <input type="text" id="departamento" required>
       </div>
       
       <div class="form-group">
         <label for="instituicao">Instituição</label>
-        <input type="text" id="instituicao" required>
-      </div>
-      
-      <div class="form-group">
-        <label for="curso">Curso</label>
-        <input type="text" id="curso" required>
+        <select id="instituicao" required>
+          <option value="">Selecione uma instituição</option>
+          <option value="1">Universidade Teste</option>
+        </select>
       </div>
       
       <div class="form-group">
@@ -49,7 +47,10 @@
       <button type="submit">Cadastrar</button>
     </form>
     <div id="msg"></div>
+    <div class="text-center mt-3">
+      <a href="login.html">Já tem uma conta? Faça login</a>
+    </div>
   </div>
-  <script src="js/cadastro-aluno.js"></script>
+  <script src="js/cadastro-professor.js"></script>
 </body>
 </html> 

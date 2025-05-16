@@ -2,14 +2,27 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8">
-  <title>Vantagens</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vantagens - Moeda Estudantil</title>
   <link rel="stylesheet" href="css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
-  <h2>Vantagens Disponíveis</h2>
-  <div id="vantagens"></div>
-  <a href="dashboard-aluno.html">Voltar</a>
-  <div id="msg"></div>
+  <div class="container">
+    <nav class="nav">
+      <a href="dashboard-aluno.html">Dashboard</a>
+      <a href="extrato.html">Extrato</a>
+      <a href="#" id="logout">Sair</a>
+    </nav>
+
+    <h2>Vantagens Disponíveis</h2>
+    
+    <div class="dashboard">
+      <div id="listaVantagens">
+        <p>Carregando vantagens...</p>
+      </div>
+    </div>
+  </div>
   <script src="js/vantagens.js"></script>
 </body>
 </html> 
