@@ -2,6 +2,8 @@ package com.moedaestudantil.service.teacher;
 
 import com.moedaestudantil.dto.teacher.TeacherDTO;
 import com.moedaestudantil.dto.teacher.TeacherLoginResponseDTO;
+import com.moedaestudantil.dto.teacher.TeacherStatementDTO;
+import com.moedaestudantil.dto.transaction.SentTransactionDTO;
 import com.moedaestudantil.dto.transaction.TransferRequestDTO;
 import com.moedaestudantil.entity.EducationalInstitution;
 import com.moedaestudantil.entity.Student;
@@ -18,6 +20,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -88,5 +92,26 @@ public class TeacherService {
         teacherRepository.save(teacher);
 
         emailService.sendCoinReceivedEmail(student.getEmail(), request.getAmount(), request.getMessage());
+    }
+
+    public TeacherStatementDTO getTeacherStatement() {
+        // TODO: Replace with authenticated teacher
+        Teacher teacher = teacherRepository.findById(1L)
+                .orElseThrow(() -> new RuntimeException("Teacher not found"));
+
+        List<SentTransactionDTO> sentTransactions = transactionRepository
+                .findBySenderId(teacher.getId()).stream()
+                .map(tx -> new SentTransactionDTO(
+                        tx.getTimestamp(),
+                        tx.getRecipient().getName(),
+                        tx.getAmount(),
+                        tx.getMessage()
+                ))
+                .collect(Collectors.toList());
+
+        return new TeacherStatementDTO(
+                teacher.getBalance(),
+                sentTransactions
+        );
     }
 }

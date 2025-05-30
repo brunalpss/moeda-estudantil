@@ -2,6 +2,7 @@ package com.moedaestudantil.controller.teacher;
 
 import com.moedaestudantil.dto.teacher.TeacherDTO;
 import com.moedaestudantil.dto.teacher.TeacherLoginResponseDTO;
+import com.moedaestudantil.dto.teacher.TeacherStatementDTO;
 import com.moedaestudantil.dto.transaction.TransferRequestDTO;
 import com.moedaestudantil.entity.Teacher;
 import com.moedaestudantil.service.teacher.TeacherService;
@@ -34,5 +35,11 @@ public class TeacherController {
     public ResponseEntity<?> transferCoins(@RequestBody TransferRequestDTO request) {
         teacherService.transferCoins(request);
         return ResponseEntity.ok(Map.of("message", "Coins successfully transferred"));
+    }
+
+    @GetMapping("/statement")
+    public ResponseEntity<TeacherStatementDTO> getTeacherStatement() {
+        TeacherStatementDTO response = teacherService.getTeacherStatement();
+        return ResponseEntity.ok(response);
     }
 }

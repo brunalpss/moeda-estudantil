@@ -85,7 +85,7 @@ public class StudentService {
                 .orElseThrow(() -> new RuntimeException("Student not found"));
 
         List<ReceivedTransactionDTO> receivedTransactions = transactionRepository
-                .findByStudentId(student.getId()).stream()
+                .findByRecipientId(student.getId()).stream()
                 .map(tx -> new ReceivedTransactionDTO(
                         tx.getTimestamp(),
                         tx.getAmount(),

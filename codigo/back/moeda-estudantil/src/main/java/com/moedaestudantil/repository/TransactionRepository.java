@@ -10,6 +10,4 @@ import java.util.List;
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
     List<Transaction> findBySenderId(Long teacherId);
     List<Transaction> findByRecipientId(Long studentId);
-
-    List<Transaction> findByStudentId(Long studentId);
 }
