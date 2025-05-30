@@ -2,12 +2,22 @@ package com.moedaestudantil.service.student;
 
 import com.moedaestudantil.dto.student.LoginResponseDTO;
 import com.moedaestudantil.dto.student.StudentDTO;
+import com.moedaestudantil.dto.transaction.RewardRedemptionResponseDTO;
 import com.moedaestudantil.entity.EducationalInstitution;
+import com.moedaestudantil.entity.Reward;
+import com.moedaestudantil.entity.RewardRedemption;
 import com.moedaestudantil.entity.Student;
 import com.moedaestudantil.repository.EducationalInstitutionRepository;
+import com.moedaestudantil.repository.RewardRedemptionRepository;
+import com.moedaestudantil.repository.RewardRepository;
 import com.moedaestudantil.repository.StudentRepository;
+import com.moedaestudantil.service.email.EmailService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Service
 public class StudentService {
@@ -17,6 +27,52 @@ public class StudentService {
 
     @Autowired
     private EducationalInstitutionRepository institutionRepository;
+
+    @Autowired
+    private RewardRepository rewardRepository;
+
+    @Autowired
+    private RewardRedemptionRepository rewardRedemptionRepository;
+
+    @Autowired
+    private EmailService emailService;
+
+    public RewardRedemptionResponseDTO redeemReward(Long rewardId) {
+        // TODO: Replace with authenticated student
+        Student student = studentRepository.findById(1L)
+                .orElseThrow(() -> new RuntimeException("Student not found"));
+
+        Reward reward = rewardRepository.findById(rewardId)
+                .orElseThrow(() -> new EntityNotFoundException("Reward not found"));
+
+        if (student.getBalance() < reward.getCost()) {
+            throw new IllegalArgumentException("Insufficient balance to redeem reward");
+        }
+
+        String code = UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+
+        RewardRedemption redemption = new RewardRedemption();
+        redemption.setStudent(student);
+        redemption.setReward(reward);
+        redemption.setRedemptionCode(code);
+        redemption.setRedeemedAt(LocalDateTime.now());
+
+        rewardRedemptionRepository.save(redemption);
+
+        student.setBalance(student.getBalance() - reward.getCost());
+        studentRepository.save(student);
+
+        emailService.sendRedemptionEmailToStudent(student.getEmail(), reward.getTitle(), code);
+        emailService.sendNotificationToPartner(reward.getPartnerCompany().getEmail(), reward.getTitle(), code);
+
+        return new RewardRedemptionResponseDTO(
+                student.getName(),
+                reward.getTitle(),
+                code,
+                reward.getPartnerCompany().getEmail(),
+                student.getEmail()
+        );
+    }
 
     public Student registerStudent(StudentDTO dto) {
         EducationalInstitution institution = institutionRepository.findById(dto.getInstitutionId())
