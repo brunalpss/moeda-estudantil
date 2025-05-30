@@ -2,14 +2,25 @@ package com.moedaestudantil.service.teacher;
 
 import com.moedaestudantil.dto.teacher.TeacherDTO;
 import com.moedaestudantil.dto.teacher.TeacherLoginResponseDTO;
+import com.moedaestudantil.dto.transaction.TransferRequestDTO;
 import com.moedaestudantil.entity.EducationalInstitution;
+import com.moedaestudantil.entity.Student;
 import com.moedaestudantil.entity.Teacher;
+import com.moedaestudantil.entity.Transaction;
 import com.moedaestudantil.repository.EducationalInstitutionRepository;
+import com.moedaestudantil.repository.StudentRepository;
 import com.moedaestudantil.repository.TeacherRepository;
+import com.moedaestudantil.repository.TransactionRepository;
+import com.moedaestudantil.service.email.EmailService;
+import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Service
+@RequiredArgsConstructor
 public class TeacherService {
 
     @Autowired
@@ -17,6 +28,12 @@ public class TeacherService {
 
     @Autowired
     private EducationalInstitutionRepository institutionRepository;
+
+    private final StudentRepository studentRepository;
+
+    private final TransactionRepository transactionRepository;
+
+    private final EmailService emailService;
 
     public Teacher register(TeacherDTO dto) {
         EducationalInstitution institution = institutionRepository.findById(dto.getInstitutionId())
@@ -44,5 +61,32 @@ public class TeacherService {
                 teacher.getEmail(),
                 teacher.getBalance()
         );
+    }
+
+    public void transferCoins(TransferRequestDTO request) {
+        // TODO: Replace with authenticated teacher ID
+        Teacher teacher = teacherRepository.findById(1L)
+                .orElseThrow(() -> new RuntimeException("Teacher not found"));
+
+        if (teacher.getBalance() < request.getAmount()) {
+            throw new IllegalArgumentException("Insufficient balance");
+        }
+
+        Student student = studentRepository.findById(request.getStudentId())
+                .orElseThrow(() -> new EntityNotFoundException("Student not found"));
+
+        Transaction transaction = new Transaction();
+        transaction.setSender(teacher);
+        transaction.setRecipient(student);
+        transaction.setAmount(request.getAmount());
+        transaction.setMessage(request.getMessage());
+        transaction.setTimestamp(LocalDateTime.now());
+
+        transactionRepository.save(transaction);
+
+        teacher.setBalance(teacher.getBalance() - request.getAmount());
+        teacherRepository.save(teacher);
+
+        emailService.sendCoinReceivedEmail(student.getEmail(), request.getAmount(), request.getMessage());
     }
 }
