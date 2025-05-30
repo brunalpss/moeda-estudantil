@@ -3,6 +3,7 @@ package com.moedaestudantil.controller.student;
 import com.moedaestudantil.dto.auth.LoginRequestDTO;
 import com.moedaestudantil.dto.student.LoginResponseDTO;
 import com.moedaestudantil.dto.student.StudentDTO;
+import com.moedaestudantil.dto.student.StudentStatementDTO;
 import com.moedaestudantil.dto.transaction.RewardRedemptionResponseDTO;
 import com.moedaestudantil.entity.Student;
 import com.moedaestudantil.service.student.StudentService;
@@ -34,6 +35,12 @@ public class StudentController {
     @PostMapping("/redeem/{rewardId}")
     public ResponseEntity<RewardRedemptionResponseDTO> redeemReward(@PathVariable Long rewardId) {
         RewardRedemptionResponseDTO response = studentService.redeemReward(rewardId);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/statement")
+    public ResponseEntity<StudentStatementDTO> getStudentStatement() {
+        StudentStatementDTO response = studentService.getStudentStatement();
         return ResponseEntity.ok(response);
     }
 
