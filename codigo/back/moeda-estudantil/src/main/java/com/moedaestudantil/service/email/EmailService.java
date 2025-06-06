@@ -13,8 +13,8 @@ public class EmailService {
         System.out.printf("Email to %s: You redeemed '%s'. Use code: %s%n", to, rewardName, code);
     }
 
-    public void sendNotificationToPartner(String to, String rewardName, String code) {
-        System.out.printf("Email to partner %s: '%s' redeemed. Confirmation code: %s%n", to, rewardName, code);
+    public void sendNotificationToPartner(String to, String rewardName, String studentName, String code) {
+        System.out.printf("Email to partner %s: '%s' redeemed. Student: %s Confirmation code: %s%n", to, rewardName, studentName, code);
     }
 
 }

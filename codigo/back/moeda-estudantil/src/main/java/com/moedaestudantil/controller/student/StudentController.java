@@ -32,15 +32,18 @@ public class StudentController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/redeem/{rewardId}")
-    public ResponseEntity<RewardRedemptionResponseDTO> redeemReward(@PathVariable Long rewardId) {
-        RewardRedemptionResponseDTO response = studentService.redeemReward(rewardId);
+    @PostMapping("/redeem/{studentId}/{rewardId}")
+    public ResponseEntity<RewardRedemptionResponseDTO> redeemReward(
+            @PathVariable Long studentId,
+            @PathVariable Long rewardId) {
+
+        RewardRedemptionResponseDTO response = studentService.redeemReward(studentId, rewardId);
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/statement")
-    public ResponseEntity<StudentStatementDTO> getStudentStatement() {
-        StudentStatementDTO response = studentService.getStudentStatement();
+    @GetMapping("/statement/{studentId}")
+    public ResponseEntity<StudentStatementDTO> getStudentStatement(@PathVariable Long studentId) {
+        StudentStatementDTO response = studentService.getStudentStatement(studentId);
         return ResponseEntity.ok(response);
     }
 

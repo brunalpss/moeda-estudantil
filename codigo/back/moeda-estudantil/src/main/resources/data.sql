@@ -1,14 +1,20 @@
-INSERT INTO educational_institution (id, name, cnpj, address)
-VALUES (1, 'Universidade Teste', '12345678000199', 'Av. Principal, 123');
+INSERT INTO educational_institution (id, name, address, cnpj)
+VALUES (1, 'PUC Minas', 'Av. Dom José Gaspar, 500', '12345678000190');
 
-INSERT INTO student (id, name, email, cpf, rg, address, course, password, balance, institution_id)
-VALUES (2, 'Aluno Resgatador', 'aluno2@exemplo.com', '98765432100', 'RJ654321', 'Rua C, 300', 'Administração', 'senha', 100, 1);
+INSERT INTO student (id, name, email, password, cpf, rg, address, course, balance, institution_id)
+VALUES (1, 'Alice Santos', 'alice@student.com', '123', '12345678901', 'MG1234567', 'Rua A, 123', 'Engenharia de Software', 200, 1);
 
-INSERT INTO teacher (id, name, email, cpf, department, password, balance, institution_id)
-VALUES (1, 'Prof. João', 'joao@exemplo.com', '12345678901', 'Matemática', 'senha123', 1000, 1);
+INSERT INTO teacher (id, name, email, password, cpf, department, balance, institution_id)
+VALUES (1, 'Carlos Oliveira', 'carlos@prof.com', '123', '98765432100', 'Informática', 1000, 1);
 
-INSERT INTO partner_company (id, name, email, cnpj, password)
-VALUES (1, 'Loja Parceira', 'contato@lojaparceira.com', '11222333000100', 'senha123');
+INSERT INTO partner_company (id, name, email, password, cnpj)
+VALUES (1, 'Cantina da Uni', 'contato@cantina.com', '123', '99999999000100');
 
-INSERT INTO reward (id, title, description, cost, image_url, partner_company_id)
-VALUES (1, 'Desconto na cantina', '10% em qualquer lanche', 50, 'https://example.com/lanche.jpg', 1);
+INSERT INTO reward (id, title, description, image_url, cost, partner_company_id)
+VALUES (1, 'Desconto na cantina', 'Desconto de R$5 em refeições', 'data:image/png;base64,ABC123==', 100, 1);
+
+INSERT INTO transaction (id, amount, message, timestamp, sender_id, recipient_id)
+VALUES (1, 50, 'Participação em aula', CURRENT_TIMESTAMP, 1, 1);
+
+INSERT INTO reward_redemption (id, redeemed_at, redemption_code, reward_id, student_id)
+VALUES (1, CURRENT_TIMESTAMP, 'ABC12345', 1, 1);

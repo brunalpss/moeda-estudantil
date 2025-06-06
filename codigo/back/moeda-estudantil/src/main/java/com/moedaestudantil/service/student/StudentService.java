@@ -42,9 +42,8 @@ public class StudentService {
     @Autowired
     private TransactionRepository transactionRepository;
 
-    public RewardRedemptionResponseDTO redeemReward(Long rewardId) {
-        // TODO: Replace with authenticated student
-        Student student = studentRepository.findById(1L)
+    public RewardRedemptionResponseDTO redeemReward(Long studentId, Long rewardId) {
+        Student student = studentRepository.findById(studentId)
                 .orElseThrow(() -> new RuntimeException("Student not found"));
 
         Reward reward = rewardRepository.findById(rewardId)
@@ -68,7 +67,7 @@ public class StudentService {
         studentRepository.save(student);
 
         emailService.sendRedemptionEmailToStudent(student.getEmail(), reward.getTitle(), code);
-        emailService.sendNotificationToPartner(reward.getPartnerCompany().getEmail(), reward.getTitle(), code);
+        emailService.sendNotificationToPartner(reward.getPartnerCompany().getEmail(), reward.getTitle(), student.getName(), code);
 
         return new RewardRedemptionResponseDTO(
                 student.getName(),
@@ -79,9 +78,8 @@ public class StudentService {
         );
     }
 
-    public StudentStatementDTO getStudentStatement() {
-        // TODO: Replace with authenticated student
-        Student student = studentRepository.findById(1L)
+    public StudentStatementDTO getStudentStatement(Long studentId) {
+        Student student = studentRepository.findById(studentId)
                 .orElseThrow(() -> new RuntimeException("Student not found"));
 
         List<ReceivedTransactionDTO> receivedTransactions = transactionRepository
