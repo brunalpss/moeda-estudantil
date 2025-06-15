@@ -26,4 +26,10 @@ public class RewardController {
         return ResponseEntity.ok(rewardService.listByCompany(companyId));
     }
 
+    @GetMapping("/all")
+    public ResponseEntity<List<RewardResponseDTO>> getAllRewards() {
+        List<RewardResponseDTO> rewards = rewardService.getAllRewards();
+        return ResponseEntity.ok(rewards);
+    }
+
 }

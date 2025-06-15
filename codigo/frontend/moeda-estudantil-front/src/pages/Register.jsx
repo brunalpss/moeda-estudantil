@@ -65,6 +65,15 @@ export default function Register() {
         };
         await axios.post('http://localhost:8080/api/teachers/register', payload);
         alert('Professor cadastrado com sucesso!');
+      } else if (role === 'company') {
+        const payload = {
+          name: formData.name,
+          email: formData.email,
+          cnpj: formData.cpf, // Reaproveitando o campo 'cpf' como CNPJ
+          password: formData.password
+        };
+        await axios.post('http://localhost:8080/api/companies/register', payload);
+        alert('Empresa cadastrada com sucesso!');
       }
 
       navigate('/');
@@ -87,16 +96,28 @@ export default function Register() {
       <form onSubmit={handleSubmit}>
         <input name="name" placeholder="Nome" onChange={handleChange} required />
         <input name="email" type="email" placeholder="Email" onChange={handleChange} required />
-        <input name="cpf" placeholder="CPF" onChange={handleChange} required />
+        <input
+          name="cpf"
+          placeholder={role === 'company' ? 'CNPJ' : 'CPF'}
+          onChange={handleChange}
+          required
+        />
         <input name="password" type="password" placeholder="Senha" onChange={handleChange} required />
 
-        {/* Dropdown de instituição */}
-        <select name="institutionId" value={formData.institutionId} onChange={handleChange} required>
-          <option value="">Selecione a instituição</option>
-          {institutions.map(inst => (
-            <option key={inst.id} value={inst.id}>{inst.name}</option>
-          ))}
-        </select>
+        {/* Dropdown de instituição — oculto para empresas */}
+        {role !== 'company' && (
+          <select
+            name="institutionId"
+            value={formData.institutionId}
+            onChange={handleChange}
+            required
+          >
+            <option value="">Selecione a instituição</option>
+            {institutions.map((inst) => (
+              <option key={inst.id} value={inst.id}>{inst.name}</option>
+            ))}
+          </select>
+        )}
 
         {/* Campos específicos */}
         {role === 'student' && (
