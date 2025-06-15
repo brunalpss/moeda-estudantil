@@ -1,5 +1,6 @@
 package com.moedaestudantil.controller.partner;
 
+import com.moedaestudantil.dto.auth.LoginRequestDTO;
 import com.moedaestudantil.dto.partner.PartnerCompanyDTO;
 import com.moedaestudantil.dto.partner.PartnerCompanyLoginResponseDTO;
 import com.moedaestudantil.entity.PartnerCompany;
@@ -21,7 +22,7 @@ public class PartnerCompanyController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<PartnerCompanyLoginResponseDTO> login(@RequestBody PartnerCompanyDTO dto) {
+    public ResponseEntity<PartnerCompanyLoginResponseDTO> login(@RequestBody LoginRequestDTO dto) {
         return ResponseEntity.ok(service.login(dto.getEmail(), dto.getPassword()));
     }
 }

@@ -14,6 +14,7 @@ export default function Register() {
     address: '',
     course: '',
     department: '',
+    cnpj: '',
     password: ''
   });
 
@@ -24,31 +25,40 @@ export default function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const commonPayload = {
-      name: formData.name,
-      email: formData.email,
-      cpf: formData.cpf,
-      password: formData.password,
-      institutionId: 1
-    };
-
     try {
       if (role === 'student') {
         const payload = {
-          ...commonPayload,
+          name: formData.name,
+          email: formData.email,
+          cpf: formData.cpf,
           rg: formData.rg,
           address: formData.address,
-          course: formData.course
+          course: formData.course,
+          password: formData.password,
+          institutionId: 1
         };
         await axios.post('http://localhost:8080/api/students/register', payload);
         alert('Aluno cadastrado com sucesso!');
-      } else {
+      } else if (role === 'teacher') {
         const payload = {
-          ...commonPayload,
-          department: formData.department
+          name: formData.name,
+          email: formData.email,
+          cpf: formData.cpf,
+          department: formData.department,
+          password: formData.password,
+          institutionId: 1
         };
         await axios.post('http://localhost:8080/api/teachers/register', payload);
         alert('Professor cadastrado com sucesso!');
+      } else if (role === 'company') {
+        const payload = {
+          name: formData.name,
+          email: formData.email,
+          cnpj: formData.cnpj,
+          password: formData.password
+        };
+        await axios.post('http://localhost:8080/api/companies/register', payload);
+        alert('Empresa cadastrada com sucesso!');
       }
 
       navigate('/');
@@ -65,16 +75,17 @@ export default function Register() {
       <select value={role} onChange={(e) => setRole(e.target.value)}>
         <option value="student">Aluno</option>
         <option value="teacher">Professor</option>
+        <option value="company">Empresa</option>
       </select>
 
       <form onSubmit={handleSubmit}>
         <input name="name" placeholder="Nome" onChange={handleChange} required />
         <input name="email" placeholder="Email" type="email" onChange={handleChange} required />
-        <input name="cpf" placeholder="CPF" onChange={handleChange} required />
         <input name="password" placeholder="Senha" type="password" onChange={handleChange} required />
 
         {role === 'student' && (
           <>
+            <input name="cpf" placeholder="CPF" onChange={handleChange} required />
             <input name="rg" placeholder="RG" onChange={handleChange} required />
             <input name="address" placeholder="Endereço" onChange={handleChange} required />
             <input name="course" placeholder="Curso" onChange={handleChange} required />
@@ -82,7 +93,16 @@ export default function Register() {
         )}
 
         {role === 'teacher' && (
-          <input name="department" placeholder="Departamento" onChange={handleChange} required />
+          <>
+            <input name="cpf" placeholder="CPF" onChange={handleChange} required />
+            <input name="department" placeholder="Departamento" onChange={handleChange} required />
+          </>
+        )}
+
+        {role === 'company' && (
+          <>
+            <input name="cnpj" placeholder="CNPJ" onChange={handleChange} required />
+          </>
         )}
 
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>

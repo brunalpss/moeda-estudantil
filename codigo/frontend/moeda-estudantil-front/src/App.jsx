@@ -10,6 +10,7 @@ function App() {
         <Route path="/cadastro" element={<Register />} />
         <Route path="/dashboard-aluno" element={<div>Dashboard do Aluno</div>} />
         <Route path="/dashboard-professor" element={<div>Dashboard do Professor</div>} />
+        <Route path="/dashboard-empresa" element={<div>Dashboard da Empresa</div>} />
       </Routes>
     </BrowserRouter>
   );

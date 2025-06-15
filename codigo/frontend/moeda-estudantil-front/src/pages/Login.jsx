@@ -17,10 +17,15 @@ export default function Login() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    const endpoint =
-      role === 'student'
-        ? 'http://localhost:8080/api/students/login'
-        : 'http://localhost:8080/api/teachers/login';
+    let endpoint = '';
+    
+    if (role === 'student') {
+      endpoint = 'http://localhost:8080/api/students/login';
+    } else if (role === 'teacher') {
+      endpoint = 'http://localhost:8080/api/teachers/login';
+    } else if (role === 'company') {
+      endpoint = 'http://localhost:8080/api/companies/login';
+    }
 
     try {
       const response = await axios.post(endpoint, formData);
@@ -31,8 +36,10 @@ export default function Login() {
 
       if (role === 'student') {
         navigate('/dashboard-aluno');
-      } else {
+      } else if (role === 'teacher') {
         navigate('/dashboard-professor');
+      } else {
+        navigate('/dashboard-empresa');
       }
     } catch (error) {
       console.error('Erro ao fazer login:', error);
@@ -47,6 +54,7 @@ export default function Login() {
       <select value={role} onChange={(e) => setRole(e.target.value)}>
         <option value="student">Aluno</option>
         <option value="teacher">Professor</option>
+        <option value="company">Empresa</option>
       </select>
 
       <form onSubmit={handleLogin}>
