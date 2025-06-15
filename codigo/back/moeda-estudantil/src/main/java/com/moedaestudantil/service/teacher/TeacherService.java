@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -50,6 +51,7 @@ public class TeacherService {
                 .department(dto.getDepartment())
                 .password(dto.getPassword())
                 .institution(institution)
+                .balance(1000)
                 .build();
 
         return teacherRepository.save(teacher);
@@ -67,40 +69,14 @@ public class TeacherService {
         );
     }
 
-    public void transferCoins(TransferRequestDTO request) {
-        // TODO: Replace with authenticated teacher ID
-        Teacher teacher = teacherRepository.findById(1L)
-                .orElseThrow(() -> new RuntimeException("Teacher not found"));
-
-        if (teacher.getBalance() < request.getAmount()) {
-            throw new IllegalArgumentException("Insufficient balance");
-        }
-
-        Student student = studentRepository.findById(request.getStudentId())
-                .orElseThrow(() -> new EntityNotFoundException("Student not found"));
-
-        Transaction transaction = new Transaction();
-        transaction.setSender(teacher);
-        transaction.setRecipient(student);
-        transaction.setAmount(request.getAmount());
-        transaction.setMessage(request.getMessage());
-        transaction.setTimestamp(LocalDateTime.now());
-
-        transactionRepository.save(transaction);
-
-        teacher.setBalance(teacher.getBalance() - request.getAmount());
-        teacherRepository.save(teacher);
-
-        emailService.sendCoinReceivedEmail(student.getEmail(), request.getAmount(), request.getMessage());
-    }
-
-    public TeacherStatementDTO getTeacherStatement() {
-        // TODO: Replace with authenticated teacher
-        Teacher teacher = teacherRepository.findById(1L)
+    public TeacherStatementDTO getTeacherStatement(Long teacherId) {
+        Teacher teacher = teacherRepository.findById(teacherId)
                 .orElseThrow(() -> new RuntimeException("Teacher not found"));
 
         List<SentTransactionDTO> sentTransactions = transactionRepository
-                .findBySenderId(teacher.getId()).stream()
+                .findBySenderId(teacher.getId())
+                .orElse(Collections.emptyList())
+                .stream()
                 .map(tx -> new SentTransactionDTO(
                         tx.getTimestamp(),
                         tx.getRecipient().getName(),
