@@ -68,8 +68,7 @@ public class TeacherService {
     }
 
     public void transferCoins(TransferRequestDTO request) {
-        // TODO: Replace with authenticated teacher ID
-        Teacher teacher = teacherRepository.findById(1L)
+        Teacher teacher = teacherRepository.findById(request.getTeacherId())
                 .orElseThrow(() -> new RuntimeException("Teacher not found"));
 
         if (teacher.getBalance() < request.getAmount()) {
@@ -94,9 +93,8 @@ public class TeacherService {
         emailService.sendCoinReceivedEmail(student.getEmail(), request.getAmount(), request.getMessage());
     }
 
-    public TeacherStatementDTO getTeacherStatement() {
-        // TODO: Replace with authenticated teacher
-        Teacher teacher = teacherRepository.findById(1L)
+    public TeacherStatementDTO getTeacherStatement(Long teacherId) {
+        Teacher teacher = teacherRepository.findById(teacherId)
                 .orElseThrow(() -> new RuntimeException("Teacher not found"));
 
         List<SentTransactionDTO> sentTransactions = transactionRepository
