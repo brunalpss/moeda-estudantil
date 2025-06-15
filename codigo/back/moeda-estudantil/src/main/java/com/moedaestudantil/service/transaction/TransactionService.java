@@ -67,7 +67,9 @@ public class TransactionService {
     }
 
     public List<TransactionResponseDTO> getTransactionsByStudent(Long studentId) {
-        return transactionRepository.findByRecipientId(studentId).stream()
+        return transactionRepository.findByRecipientId(studentId)
+                .orElse(Collections.emptyList())
+                .stream()
                 .map(tx -> new TransactionResponseDTO(
                         tx.getId(),
                         tx.getSender().getName(),
@@ -75,8 +77,10 @@ public class TransactionService {
                         tx.getAmount(),
                         tx.getMessage(),
                         tx.getTimestamp()
-                )).toList();
+                ))
+                .toList();
     }
+
 
     public List<TransactionResponseDTO> getTransactionsByTeacher(Long teacherId) {
         return transactionRepository.findBySenderId(teacherId)

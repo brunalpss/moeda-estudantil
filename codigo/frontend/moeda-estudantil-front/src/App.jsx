@@ -4,6 +4,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import ProfessorDashboard from './pages/ProfessorDashboard';
 import CompanyDashboard from './pages/CompanyDashboard';
+import AlunoDashboard from './pages/AlunoDashboard'; 
 
 function App() {
   return (
@@ -13,7 +14,7 @@ function App() {
         <Route path="/cadastro" element={<Register />} />
         <Route path="/dashboard-professor" element={<ProfessorDashboard />} />
         <Route path="/dashboard-empresa" element={<CompanyDashboard />} />
-        <Route path="/dashboard-aluno" element={<div>Dashboard do Aluno</div>} />
+        <Route path="/dashboard-aluno" element={<AlunoDashboard />} /> 
       </Routes>
     </BrowserRouter>
   );

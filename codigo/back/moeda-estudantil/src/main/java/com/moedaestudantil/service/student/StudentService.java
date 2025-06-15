@@ -17,9 +17,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+import static java.util.Objects.nonNull;
 
 @Service
 public class StudentService {
@@ -82,24 +86,9 @@ public class StudentService {
         Student student = studentRepository.findById(studentId)
                 .orElseThrow(() -> new RuntimeException("Student not found"));
 
-        List<ReceivedTransactionDTO> receivedTransactions = transactionRepository
-                .findByRecipientId(student.getId()).stream()
-                .map(tx -> new ReceivedTransactionDTO(
-                        tx.getTimestamp(),
-                        tx.getAmount(),
-                        tx.getSender().getName(),
-                        tx.getMessage()
-                ))
-                .collect(Collectors.toList());
+        List<ReceivedTransactionDTO> receivedTransactions = getReceivedTransactionDTOS(student);
 
-        List<RedeemedRewardDTO> redeemedRewards = rewardRedemptionRepository
-                .findByStudentId(student.getId()).stream()
-                .map(rr -> new RedeemedRewardDTO(
-                        rr.getRedeemedAt(),
-                        rr.getReward().getTitle(),
-                        rr.getRedemptionCode()
-                ))
-                .collect(Collectors.toList());
+        List<RedeemedRewardDTO> redeemedRewards = getRedeemedRewardDTOS(student);
 
         return new StudentStatementDTO(
                 student.getBalance(),
@@ -107,6 +96,36 @@ public class StudentService {
                 redeemedRewards
         );
     }
+
+    private List<RedeemedRewardDTO> getRedeemedRewardDTOS(Student student) {
+        List<RedeemedRewardDTO> redeemedRewards = rewardRedemptionRepository
+                .findByStudentId(student.getId())
+                .orElse(Collections.emptyList())
+                .stream()
+                .map(rr -> new RedeemedRewardDTO(
+                        rr.getRedeemedAt(),
+                        rr.getReward().getTitle(),
+                        rr.getRedemptionCode()
+                ))
+                .collect(Collectors.toList());
+        return redeemedRewards;
+    }
+
+    private List<ReceivedTransactionDTO> getReceivedTransactionDTOS(Student student) {
+        List<ReceivedTransactionDTO> receivedTransactions = transactionRepository
+                .findByRecipientId(student.getId())
+                .orElse(Collections.emptyList())
+                .stream()
+                .map(tx -> new ReceivedTransactionDTO(
+                        tx.getTimestamp(),
+                        tx.getAmount(),
+                        tx.getSender().getName(),
+                        tx.getMessage()
+                ))
+                .collect(Collectors.toList());
+        return receivedTransactions;
+    }
+
 
     public Student registerStudent(StudentDTO dto) {
         EducationalInstitution institution = institutionRepository.findById(dto.getInstitutionId())
