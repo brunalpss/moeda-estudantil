@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class TransferRequestDTO {
     private Long teacherId;
-    private Long studentId;
+    private String studentName;
     private int amount;
     private String message;
 }

@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -30,7 +32,7 @@ public class TransactionService {
         Teacher teacher = teacherRepository.findById(dto.getTeacherId())
                 .orElseThrow(() -> new RuntimeException("Teacher not found"));
 
-        Student student = studentRepository.findById(dto.getStudentId())
+        Student student = studentRepository.findByName(dto.getStudentName())
                 .orElseThrow(() -> new RuntimeException("Student not found"));
 
         if (dto.getAmount() <= 0) {
@@ -77,7 +79,9 @@ public class TransactionService {
     }
 
     public List<TransactionResponseDTO> getTransactionsByTeacher(Long teacherId) {
-        return transactionRepository.findBySenderId(teacherId).stream()
+        return transactionRepository.findBySenderId(teacherId)
+                .orElse(Collections.emptyList())
+                .stream()
                 .map(tx -> new TransactionResponseDTO(
                         tx.getId(),
                         tx.getSender().getName(),
@@ -85,7 +89,8 @@ public class TransactionService {
                         tx.getAmount(),
                         tx.getMessage(),
                         tx.getTimestamp()
-                )).toList();
+                ))
+                .toList();
     }
 
 }

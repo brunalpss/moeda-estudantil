@@ -32,14 +32,8 @@ public class TeacherController {
         return ResponseEntity.ok(teacherService.login(dto.getEmail(), dto.getPassword()));
     }
 
-    @PostMapping("/transfer")
-    public ResponseEntity<?> transferCoins(@RequestBody TransferRequestDTO request) {
-        teacherService.transferCoins(request);
-        return ResponseEntity.ok(Map.of("message", "Coins successfully transferred"));
-    }
-
     @GetMapping("/statement")
-    public ResponseEntity<TeacherStatementDTO> getTeacherStatement(@RequestParam Long teacherId) {
+    public ResponseEntity<TeacherStatementDTO> getTeacherStatement(@RequestParam("teacherId") Long teacherId) {
         TeacherStatementDTO response = teacherService.getTeacherStatement(teacherId);
         return ResponseEntity.ok(response);
     }
