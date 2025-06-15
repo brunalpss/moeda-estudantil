@@ -9,7 +9,9 @@ import com.moedaestudantil.repository.RewardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class RewardService {
@@ -54,5 +56,24 @@ public class RewardService {
                         r.getImageUrl(),
                         r.getPartnerCompany().getName()
                 )).toList();
+    }
+
+    public List<RewardResponseDTO> getAllRewards() {
+        List<Reward> rewards = rewardRepository.findAll();
+
+        if (rewards.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        return rewards.stream()
+                .map(reward -> new RewardResponseDTO(
+                        reward.getId(),
+                        reward.getTitle(),
+                        reward.getDescription(),
+                        reward.getCost(),
+                        reward.getImageUrl(),
+                        reward.getPartnerCompany().getName()
+                ))
+                .collect(Collectors.toList());
     }
 }

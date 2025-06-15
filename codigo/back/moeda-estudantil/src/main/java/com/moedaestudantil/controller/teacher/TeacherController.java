@@ -1,5 +1,6 @@
 package com.moedaestudantil.controller.teacher;
 
+import com.moedaestudantil.dto.auth.LoginRequestDTO;
 import com.moedaestudantil.dto.teacher.TeacherDTO;
 import com.moedaestudantil.dto.teacher.TeacherLoginResponseDTO;
 import com.moedaestudantil.dto.teacher.TeacherStatementDTO;
@@ -27,19 +28,13 @@ public class TeacherController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<TeacherLoginResponseDTO> login(@RequestBody TeacherDTO dto) {
+    public ResponseEntity<TeacherLoginResponseDTO> login(@RequestBody LoginRequestDTO dto) {
         return ResponseEntity.ok(teacherService.login(dto.getEmail(), dto.getPassword()));
     }
 
-    @PostMapping("/transfer")
-    public ResponseEntity<?> transferCoins(@RequestBody TransferRequestDTO request) {
-        teacherService.transferCoins(request);
-        return ResponseEntity.ok(Map.of("message", "Coins successfully transferred"));
-    }
-
     @GetMapping("/statement")
-    public ResponseEntity<TeacherStatementDTO> getTeacherStatement() {
-        TeacherStatementDTO response = teacherService.getTeacherStatement();
+    public ResponseEntity<TeacherStatementDTO> getTeacherStatement(@RequestParam("teacherId") Long teacherId) {
+        TeacherStatementDTO response = teacherService.getTeacherStatement(teacherId);
         return ResponseEntity.ok(response);
     }
 }

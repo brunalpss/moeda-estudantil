@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -63,7 +64,9 @@ public class RewardRedemptionService {
     }
 
     public List<RewardRedemptionHistoryDTO> getRedemptionsByStudent(Long studentId) {
-        return redemptionRepository.findByStudentId(studentId).stream()
+        return redemptionRepository.findByStudentId(studentId)
+                .orElse(Collections.emptyList())
+                .stream()
                 .map(r -> new RewardRedemptionHistoryDTO(
                         r.getReward().getTitle(),
                         r.getReward().getDescription(),
@@ -74,4 +77,5 @@ public class RewardRedemptionService {
                 ))
                 .toList();
     }
+
 }
