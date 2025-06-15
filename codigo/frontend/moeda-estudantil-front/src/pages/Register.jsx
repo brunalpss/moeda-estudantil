@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import '../styles/Form.css';
@@ -6,6 +6,7 @@ import '../styles/Form.css';
 export default function Register() {
   const navigate = useNavigate();
   const [role, setRole] = useState('student');
+  const [institutions, setInstitutions] = useState([]);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -14,9 +15,23 @@ export default function Register() {
     address: '',
     course: '',
     department: '',
-    cnpj: '',
-    password: ''
+    password: '',
+    institutionId: ''
   });
+
+  useEffect(() => {
+    async function fetchInstitutions() {
+      try {
+        const response = await axios.get('http://localhost:8080/api/institutions');
+        setInstitutions(response.data);
+      } catch (error) {
+        console.error('Erro ao buscar instituições:', error);
+        alert('Erro ao carregar instituições.');
+      }
+    }
+
+    fetchInstitutions();
+  }, []);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -35,7 +50,7 @@ export default function Register() {
           address: formData.address,
           course: formData.course,
           password: formData.password,
-          institutionId: 1
+          institutionId: Number(formData.institutionId)
         };
         await axios.post('http://localhost:8080/api/students/register', payload);
         alert('Aluno cadastrado com sucesso!');
@@ -46,19 +61,10 @@ export default function Register() {
           cpf: formData.cpf,
           department: formData.department,
           password: formData.password,
-          institutionId: 1
+          institutionId: Number(formData.institutionId)
         };
         await axios.post('http://localhost:8080/api/teachers/register', payload);
         alert('Professor cadastrado com sucesso!');
-      } else if (role === 'company') {
-        const payload = {
-          name: formData.name,
-          email: formData.email,
-          cnpj: formData.cnpj,
-          password: formData.password
-        };
-        await axios.post('http://localhost:8080/api/companies/register', payload);
-        alert('Empresa cadastrada com sucesso!');
       }
 
       navigate('/');
@@ -75,17 +81,26 @@ export default function Register() {
       <select value={role} onChange={(e) => setRole(e.target.value)}>
         <option value="student">Aluno</option>
         <option value="teacher">Professor</option>
-        <option value="company">Empresa</option>
+        <option value="company">Empresa Parceira</option>
       </select>
 
       <form onSubmit={handleSubmit}>
         <input name="name" placeholder="Nome" onChange={handleChange} required />
-        <input name="email" placeholder="Email" type="email" onChange={handleChange} required />
-        <input name="password" placeholder="Senha" type="password" onChange={handleChange} required />
+        <input name="email" type="email" placeholder="Email" onChange={handleChange} required />
+        <input name="cpf" placeholder="CPF" onChange={handleChange} required />
+        <input name="password" type="password" placeholder="Senha" onChange={handleChange} required />
 
+        {/* Dropdown de instituição */}
+        <select name="institutionId" value={formData.institutionId} onChange={handleChange} required>
+          <option value="">Selecione a instituição</option>
+          {institutions.map(inst => (
+            <option key={inst.id} value={inst.id}>{inst.name}</option>
+          ))}
+        </select>
+
+        {/* Campos específicos */}
         {role === 'student' && (
           <>
-            <input name="cpf" placeholder="CPF" onChange={handleChange} required />
             <input name="rg" placeholder="RG" onChange={handleChange} required />
             <input name="address" placeholder="Endereço" onChange={handleChange} required />
             <input name="course" placeholder="Curso" onChange={handleChange} required />
@@ -93,16 +108,7 @@ export default function Register() {
         )}
 
         {role === 'teacher' && (
-          <>
-            <input name="cpf" placeholder="CPF" onChange={handleChange} required />
-            <input name="department" placeholder="Departamento" onChange={handleChange} required />
-          </>
-        )}
-
-        {role === 'company' && (
-          <>
-            <input name="cnpj" placeholder="CNPJ" onChange={handleChange} required />
-          </>
+          <input name="department" placeholder="Departamento" onChange={handleChange} required />
         )}
 
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
