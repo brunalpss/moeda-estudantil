@@ -27,7 +27,12 @@ import static java.util.Objects.nonNull;
 
 @Service
 public class StudentService {
-
+    /*
+     * CODE REVIEW: A classe utiliza injeção por campo com @Autowired em vários atributos. Embora funcione,
+     * essa abordagem dificulta testes unitários e deixa as dependências menos explícitas. Uma melhoria seria
+     * usar injeção por construtor, preferencialmente com Lombok @RequiredArgsConstructor e atributos final,
+     * facilitando mocks e aumentando a imutabilidade das dependências do serviço.
+     */
     @Autowired
     private StudentRepository studentRepository;
 
@@ -45,7 +50,11 @@ public class StudentService {
 
     @Autowired
     private TransactionRepository transactionRepository;
-
+    /*
+     * CODE REVIEW: O método redeemReward executa uma regra de negócio crítica, pois consulta aluno e recompensa,
+     * valida saldo, cria o resgate, altera o saldo do aluno e envia e-mails. Esse fluxo deveria ser transacional
+     * com @Transactional para evitar inconsistência caso alguma etapa falhe no meio da operação.
+     */
     public RewardRedemptionResponseDTO redeemReward(Long studentId, Long rewardId) {
         Student student = studentRepository.findById(studentId)
                 .orElseThrow(() -> new RuntimeException("Student not found"));
@@ -64,12 +73,21 @@ public class StudentService {
         redemption.setReward(reward);
         redemption.setRedemptionCode(code);
         redemption.setRedeemedAt(LocalDateTime.now());
-
+        /*
+         * CODE REVIEW: O resgate é salvo antes da atualização do saldo do aluno. Sem uma transação envolvendo
+         * as duas operações, pode ocorrer um cenário em que o resgate seja persistido, mas o saldo não seja
+         * descontado corretamente. Recomenda-se garantir atomicidade entre criação do resgate e alteração do saldo.
+         */
         rewardRedemptionRepository.save(redemption);
 
         student.setBalance(student.getBalance() - reward.getCost());
         studentRepository.save(student);
-
+        /*
+         * CODE REVIEW: O envio de e-mails está acoplado diretamente ao fluxo principal de resgate. Caso o serviço
+         * de e-mail falhe, a operação de negócio pode ser impactada mesmo que o resgate e o desconto de saldo
+         * estejam corretos. Uma alternativa seria publicar um evento de domínio ou executar o envio de e-mail
+         * de forma assíncrona após a confirmação da transação.
+         */
         emailService.sendRedemptionEmailToStudent(student.getEmail(), reward.getTitle(), code);
         emailService.sendNotificationToPartner(reward.getPartnerCompany().getEmail(), reward.getTitle(), student.getName(), code);
 
@@ -138,6 +156,11 @@ public class StudentService {
                 .rg(dto.getRg())
                 .address(dto.getAddress())
                 .course(dto.getCourse())
+                /*
+                 * CODE REVIEW: A senha recebida no DTO está sendo atribuída diretamente à entidade Student.
+                 * Por segurança, a senha não deveria ser persistida em texto puro. Recomenda-se aplicar hash
+                 * com BCryptPasswordEncoder antes de salvar o aluno no banco de dados.
+                 */
                 .password(dto.getPassword())
                 .institution(institution)
                 .build();
@@ -145,6 +168,11 @@ public class StudentService {
         return studentRepository.save(student);
     }
 
+    /*
+     * CODE REVIEW: O login depende de findByEmailAndPassword, o que pressupõe senha em texto puro no banco.
+     * Uma arquitetura mais segura seria buscar o aluno apenas pelo e-mail e validar a senha com passwordEncoder.matches().
+     * Isso também facilita a futura adoção de JWT ou outro mecanismo de autenticação.
+     */
     public LoginResponseDTO login(String email, String password) {
         Student student = studentRepository.findByEmailAndPassword(email, password)
                 .orElseThrow(() -> new RuntimeException("Invalid email or password"));
